@@ -6,6 +6,7 @@ function App() {
       <h1>Docs App</h1>
       <div>
         <h2>react js docs app</h2>
+        <h3>docs clone</h3>
       </div>
     </div>
   );
