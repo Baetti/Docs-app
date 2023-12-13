@@ -29,6 +29,7 @@ function Doc({ database }) {
   // to hold datas
   const [title, setTitle] = useState("");
   // console.log(title);
+  const [docsData, setDocsData] = useState([]);
 
   const addData = () => {
     addDoc(collectionRef, {
@@ -44,12 +45,16 @@ function Doc({ database }) {
 
   const getData = () => {
     onSnapshot(collectionRef, (data) => {
-      console.log(
+      setDocsData(
         data.docs.map((doc) => {
           return { ...doc.data(), id: doc.id };
         })
       );
     });
+  };
+
+  const getId = (id) => {
+    console.log(id);
   };
 
   useEffect(() => {
@@ -62,7 +67,6 @@ function Doc({ database }) {
       <button onClick={handleOpen} className="rounded add-docs">
         Add a Document
       </button>
-
       <Modal
         // title={title}
         // setTitle={setTitle}
@@ -88,6 +92,16 @@ function Doc({ database }) {
           </div>
         </Box>
       </Modal>
+
+      <div className="grid-main">
+        {docsData.map((doc) => {
+          return (
+            <div className="grid-child" onClick={() => getId(doc.id)}>
+              <p>{doc.title}</p>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
