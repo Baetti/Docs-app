@@ -1,10 +1,11 @@
 import "./App.css";
 import Doc from "./components/Doc";
+import { app, database } from "./firebaseConfig";
 
 function App() {
   return (
     <>
-      <Doc />
+      <Doc database={database} />
     </>
   );
 }

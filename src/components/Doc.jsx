@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Doc.css";
 
+import { addDoc, collection, onSnapshot } from "firebase/firestore";
 import Box from "@mui/material/Box";
-// import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
+// import Button from "@mui/material/Button";
+// import Typography from "@mui/material/Typography";
 
-function Doc() {
+function Doc({ database }) {
   const style = {
     position: "absolute",
     top: "50%",
@@ -21,6 +22,39 @@ function Doc() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  // firebase collection
+  const collectionRef = collection(database, "docsData");
+
+  // to hold datas
+  const [title, setTitle] = useState("");
+  // console.log(title);
+
+  const addData = () => {
+    addDoc(collectionRef, {
+      title,
+    })
+      .then(() => {
+        alert("Data Added");
+      })
+      .catch(() => {
+        alert("Cannot Add Data");
+      });
+  };
+
+  const getData = () => {
+    onSnapshot(collectionRef, (data) => {
+      console.log(
+        data.docs.map((doc) => {
+          return { ...doc.data(), id: doc.id };
+        })
+      );
+    });
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
   return (
     <div className="docs-main">
       <h1>Docs Clone</h1>
@@ -30,6 +64,8 @@ function Doc() {
       </button>
 
       <Modal
+        // title={title}
+        // setTitle={setTitle}
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
@@ -41,9 +77,14 @@ function Doc() {
             type="text"
             placeholder="Add the Title"
             className="add-input"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
           <div className="button-container">
-            <button className="add-docs rounded"> Add</button>
+            <button onClick={addData} className="add-docs rounded">
+              {" "}
+              Add
+            </button>
           </div>
         </Box>
       </Modal>
