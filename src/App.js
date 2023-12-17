@@ -9,7 +9,10 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<Doc database={database} />} />
-        <Route path="/edit/:id" element={<EditDocs database={database} />} />
+        <Route
+          path="/editDocs/:id"
+          element={<EditDocs database={database} />}
+        />
       </Routes>
     </>
   );

@@ -4,6 +4,7 @@ import "./Doc.css";
 import { addDoc, collection, onSnapshot } from "firebase/firestore";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
+import { useNavigate } from "react-router-dom";
 // import Button from "@mui/material/Button";
 // import Typography from "@mui/material/Typography";
 
@@ -19,18 +20,20 @@ function Doc({ database }) {
     boxShadow: 24,
     p: 4,
   };
+  // firebase collection
+  const collectionRef = collection(database, "docsData");
+
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
-  // firebase collection
-  const collectionRef = collection(database, "docsData");
+  const navigate = useNavigate();
 
   // to hold datas
   const [title, setTitle] = useState("");
   // console.log(title);
   const [docsData, setDocsData] = useState([]);
 
+  //  adding datas to firebase
   const addData = () => {
     addDoc(collectionRef, {
       title,
@@ -43,6 +46,7 @@ function Doc({ database }) {
       });
   };
 
+  // getting data from firebase
   const getData = () => {
     onSnapshot(collectionRef, (data) => {
       setDocsData(
@@ -54,12 +58,14 @@ function Doc({ database }) {
   };
 
   const getId = (id) => {
-    console.log(id);
+    // console.log(id);
+    navigate(`/editDocs/${id}`);
   };
 
   useEffect(() => {
     getData();
   }, []);
+
   return (
     <div className="docs-main">
       <h1>Docs Clone</h1>
@@ -98,6 +104,11 @@ function Doc({ database }) {
           return (
             <div className="grid-child" onClick={() => getId(doc.id)}>
               <p>{doc.title}</p>
+              {/*We are using dangerouslySetInnerHTML because data is added in the form of tags in React Quill. That makes it easier to render the formatting.  */}
+              <div
+                className="text-primary"
+                dangerouslySetInnerHTML={{ __html: doc.docsDesc }}
+              />
             </div>
           );
         })}
