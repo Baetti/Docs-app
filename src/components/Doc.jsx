@@ -7,6 +7,8 @@ import Modal from "@mui/material/Modal";
 import { useNavigate } from "react-router-dom";
 // import Button from "@mui/material/Button";
 // import Typography from "@mui/material/Typography";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Doc({ database }) {
   const style = {
@@ -37,12 +39,14 @@ function Doc({ database }) {
   const addData = () => {
     addDoc(collectionRef, {
       title,
+      docsDesc: "",
     })
       .then(() => {
-        alert("Data Added");
+        toast.success("Data Added");
+        handleClose();
       })
       .catch(() => {
-        alert("Cannot Add Data");
+        toast.error("Cannot Add Data");
       });
   };
 
@@ -102,17 +106,21 @@ function Doc({ database }) {
       <div className="grid-main">
         {docsData.map((doc) => {
           return (
-            <div className="grid-child" onClick={() => getId(doc.id)}>
+            <div
+              className="grid-child text-light"
+              onClick={() => getId(doc.id)}
+            >
               <p>{doc.title}</p>
               {/*We are using dangerouslySetInnerHTML because data is added in the form of tags in React Quill. That makes it easier to render the formatting.  */}
               <div
-                className="text-primary"
+                className="text-success"
                 dangerouslySetInnerHTML={{ __html: doc.docsDesc }}
               />
             </div>
           );
         })}
       </div>
+      <ToastContainer />
     </div>
   );
 }

@@ -4,12 +4,16 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useParams } from "react-router-dom";
 import { database } from "../firebaseConfig";
+import "./editDocs.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function EditDocs() {
   // creating collection reference to update the data
   const collectionRef = collection(database, "docsData");
 
   const [docsDesc, setDocsDesc] = useState("");
+  const [docsTitle, setDocsTitle] = useState("");
 
   let params = useParams();
   // console.log(params);
@@ -32,7 +36,7 @@ function EditDocs() {
           // console.log("Data Added");
         })
         .catch(() => {
-          alert("Data is not saved");
+          toast.error("Data is not saved");
         });
     }, 1000);
 
@@ -43,7 +47,8 @@ function EditDocs() {
   const getData = () => {
     const document = doc(collectionRef, params.id);
     onSnapshot(document, (docs) => {
-      console.log(docs.data().dpcsDesc);
+      setDocsDesc(docs.data().docsDesc);
+      setDocsTitle(docs.data().title);
     });
   };
 
@@ -52,9 +57,16 @@ function EditDocs() {
   }, []);
 
   return (
-    <div>
-      <h1>Edit Docs</h1>
-      <ReactQuill value={docsDesc} onChange={getQuillData} />
+    <div className="editdocs-main">
+      <h1>{docsTitle}</h1>
+      <div className="editdocs-inner">
+        <ReactQuill
+          value={docsDesc}
+          onChange={getQuillData}
+          className="react-quill"
+        />
+      </div>
+      <ToastContainer />
     </div>
   );
 }
